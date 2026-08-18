@@ -99,6 +99,75 @@
     // so doing nothing here is the correct behaviour.
   }
 
+  /* ------------------------------------------------------------------
+     Immediate acknowledgement when a form is sent.
+
+     The instant the visitor presses Send, the button changes to
+     "Sending your message…" with a spinner, and a second press is ignored.
+     That happens straight away, before the server has been anywhere near it,
+     so there is never a moment where the visitor is left wondering whether
+     the click registered. The server then redirects to the confirmation
+     page, which is the acknowledgement that the message really did arrive.
+
+     NOTE — the button is deliberately NOT disabled:
+
+       - Disabling it in the submit handler can drop the button's own
+         name/value from the POST in some browsers, and the PHP side is
+         looking for submitForm. A flag guards double submission instead.
+       - If the visitor uses the browser Back button afterwards, some
+         browsers restore the page from cache exactly as it was left. A
+         disabled button would still be disabled, stranding them. The
+         pageshow handler below resets the button for exactly that case.
+
+     With JavaScript off, none of this runs and the form submits normally.
+     ------------------------------------------------------------------ */
+  function initSubmitOnce() {
+    var forms = document.querySelectorAll('[data-submit-once]');
+
+    Array.prototype.forEach.call(forms, function (form) {
+      var button = form.querySelector('button[type="submit"]');
+      if (!button) return;
+
+      var label   = button.querySelector('.btn__label') || button;
+      var status  = form.querySelector('[data-submit-status]');
+      var resting = label.textContent;
+      var sending = button.getAttribute('data-sending') || 'Sending…';
+      var busy    = false;
+
+      form.addEventListener('submit', function (e) {
+        // Second and subsequent presses: stop them dead.
+        if (busy) {
+          e.preventDefault();
+          return;
+        }
+
+        // Let the browser's own required/type checks fail first — if the
+        // form is not valid it is not going anywhere, so it must not look
+        // as though it has been sent.
+        if (typeof form.checkValidity === 'function' && !form.checkValidity()) {
+          return;
+        }
+
+        busy = true;
+        button.setAttribute('aria-busy', 'true');
+        button.classList.add('is-sending');
+        label.textContent = sending;
+        if (status) status.textContent = sending;
+      });
+
+      // Restoring from the back/forward cache hands back the page exactly as
+      // it was left — mid-send. Put it back to rest.
+      window.addEventListener('pageshow', function (e) {
+        if (!e.persisted && !busy) return;
+        busy = false;
+        button.removeAttribute('aria-busy');
+        button.classList.remove('is-sending');
+        label.textContent = resting;
+        if (status) status.textContent = '';
+      });
+    });
+  }
+
   function ready(fn) {
     if (document.readyState !== 'loading') fn();
     else document.addEventListener('DOMContentLoaded', fn);
@@ -108,5 +177,6 @@
     initNav();
     initCounters();
     initBack();
+    initSubmitOnce();
   });
 }());

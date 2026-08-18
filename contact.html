@@ -79,7 +79,11 @@
         <span class="req" aria-hidden="true">*</span> are required.
       </p>
 
-      <form method="post" action="#" novalidate>
+      <!-- No novalidate: the browser enforces required and type="email" and
+           says so immediately, before anything is sent. The server must still
+           validate everything again — the browser is a convenience, not a
+           guarantee. -->
+      <form method="post" action="#" data-submit-once>
 
         <input type="hidden" name="_id" value="6a8438f671ab7">
         <input type="hidden" name="_updated" value="">
@@ -126,13 +130,21 @@
         </div>
 
         <div class="form-actions">
-          <button type="submit" name="submitForm" class="btn btn--primary">
-            <svg class="icon" aria-hidden="true"><use href="#i-mail"></use></svg>
-            Send message
+          <!-- data-sending is the label the button swaps to the instant it is
+               pressed. The button is NOT disabled — see pagan.js for why. -->
+          <button type="submit" name="submitForm" class="btn btn--primary"
+                  data-sending="Sending your message…">
+            <svg class="icon icon--send" aria-hidden="true"><use href="#i-mail"></use></svg>
+            <span class="btn__spinner" aria-hidden="true"></span>
+            <span class="btn__label">Send message</span>
           </button>
           <span class="spacer"></span>
           <a class="btn btn--quiet" href="index.html" data-back>Back</a>
         </div>
+
+        <!-- Announced to screen readers the moment the button is pressed;
+             invisible to everyone else. -->
+        <p class="sr-only" role="status" aria-live="polite" data-submit-status></p>
 
       </form>
     </div>

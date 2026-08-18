@@ -161,6 +161,62 @@ guesses:
     about.
 
 
+6a. ACKNOWLEDGING A SENT MESSAGE
+--------------------------------
+There are two separate acknowledgements, and both matter.
+
+THE IMMEDIATE ONE (contact.html + pagan.js)
+The moment the visitor presses Send, before the server has been anywhere near
+it, the button swaps to "Sending your message..." with a small spinner, and a
+second press is ignored. That is what stops the "did that work?" second click
+that produces duplicate messages in your inbox.
+
+The button is deliberately NOT disabled at that point, for two reasons:
+
+  - Disabling a submit button inside its own submit handler can drop the
+    button's name/value from the POST in some browsers, and your PHP is
+    looking for submitForm. A flag guards the second press instead. I tested
+    this: submitForm and all four fields arrive intact.
+  - If the visitor presses Back afterwards, browsers may restore the page from
+    cache exactly as it was left. A disabled button would still be disabled
+    and they would be stuck. There is a pageshow handler that resets it.
+
+Note this is the opposite of the current behaviour and not a contradiction:
+disabling the button AFTER a valid submission is right, disabling it BEFORE
+the visitor has done anything is the bug described in 6(b).
+
+I also removed novalidate from the form, so the browser now enforces required
+and type="email" and says so straight away. An empty form and a malformed
+address are both stopped before any request is made, and the button does not
+falsely say "Sending". Your server must still validate everything again.
+
+THE REAL ONE (contact-sent.html)
+Take the POST, save the message, then REDIRECT to the confirmation page —
+do not just print the thank-you in the response to the POST. That is the
+post/redirect/get pattern, and it is what stops a browser refresh from
+re-sending the message. Your form already carries after_update=/contact/show,
+so the plumbing is there:
+
+    POST /contact/input/0   ->  save  ->  303 redirect  ->  GET /contact/show
+
+contact-sent.html is what /contact/show should render. Two details in it:
+
+  - role="status" on the panel, so a screen reader announces the confirmation
+    on arrival rather than the visitor having to hunt for it.
+  - <meta name="robots" content="noindex, nofollow">, because a confirmation
+    page has no business in a search index.
+
+The panel echoes the visitor's own name, email, subject and message back to
+them, from the record you have just written. That is the difference between a
+page that says "thanks" and one that proves what actually arrived — and if the
+echo is wrong, they can see it immediately and send a correction. Fill those
+four values from the saved row, not from the raw POST, so that what they see
+is genuinely what you stored.
+
+If you would rather not echo the message back, delete the whole
+.confirm__receipt block; the page still stands up without it.
+
+
 7. THE ONE THING THAT MATTERS MOST
 ----------------------------------
 Neither the current home page nor the current contact page has a viewport
