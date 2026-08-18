@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact Us — Pagan Events</title>
+<meta name="description" content="Get in touch with Pagan Events about a listing, a correction or a suggestion for the site.">
+<meta name="theme-color" content="#2b5a1c">
+<link rel="icon" href="assets/img/logo.png" sizes="128x128" type="image/png">
+<link rel="stylesheet" href="assets/css/pagan.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3.6 6.8h16.8M3.6 12h16.8M3.6 17.2h16.8"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24">
+    <rect x="2.8" y="5" width="18.4" height="14" rx="2.4"/><path d="m3.4 7.2 8.6 6 8.6-6"/>
+  </symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="8.6"/><path d="M12 7.6v5M12 16.2h.01"/>
+  </symbol>
+</svg>
+
+<header class="masthead">
+  <div class="shell masthead__inner">
+    <img class="masthead__mark" src="assets/img/logo.png" width="128" height="128" alt="">
+    <div class="masthead__titles">
+      <h1 class="masthead__title"><a href="index.html">Pagan Events</a></h1>
+      <p class="masthead__strap">Contact Us</p>
+    </div>
+    <img class="masthead__mark masthead__mark--dup" src="assets/img/logo.png" width="128" height="128" alt="">
+  </div>
+</header>
+
+<nav class="nav" data-nav aria-label="Main">
+  <div class="shell nav__bar">
+    <button class="nav__toggle" type="button" data-nav-toggle
+            aria-expanded="true" aria-controls="nav-panel" hidden>
+      <svg class="icon icon--open"  aria-hidden="true"><use href="#i-menu"></use></svg>
+      <svg class="icon icon--close" aria-hidden="true"><use href="#i-close"></use></svg>
+      Menu
+    </button>
+    <div class="nav__panel" id="nav-panel">
+      <div>
+        <ul class="nav__list">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="#">Events</a></li>
+          <li><a href="#">Moots</a></li>
+          <li><a href="#">Links</a></li>
+          <li><a href="#">Sun &amp; Moon</a></li>
+          <li><a href="#">Wheel</a></li>
+          <li><a href="contact.html" aria-current="page">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main class="page" id="main">
+  <div class="shell">
+
+    <div class="form-card">
+
+      <!-- PHP: print this block only when the previous POST failed validation.
+           .notice--info and .notice--warning are also available. -->
+      <!--
+      <div class="notice notice--error" role="alert">
+        <svg class="icon" aria-hidden="true"><use href="#i-alert"></use></svg>
+        <div>Please check the highlighted fields below and try again.</div>
+      </div>
+      -->
+
+      <p class="form-note">
+        Use this form to tell us about a listing, report something that has
+        changed, or suggest an improvement to the site. Fields marked
+        <span class="req" aria-hidden="true">*</span> are required.
+      </p>
+
+      <form method="post" action="#" novalidate>
+
+        <input type="hidden" name="_id" value="6a8438f671ab7">
+        <input type="hidden" name="_updated" value="">
+        <input type="hidden" name="after_update" value="/contact/show">
+
+        <div class="field">
+          <label for="name">Your name <span class="req" aria-hidden="true">*</span></label>
+          <input type="text" id="name" name="name" required
+                 autocomplete="name" autocapitalize="words" value="">
+        </div>
+
+        <div class="field">
+          <label for="email">Email address <span class="req" aria-hidden="true">*</span></label>
+          <input type="email" id="email" name="email" required
+                 autocomplete="email" inputmode="email" spellcheck="false"
+                 aria-describedby="email-hint" value="">
+          <span class="hint" id="email-hint">So we can reply. We will not pass it on to anyone.</span>
+        </div>
+
+        <!-- This is what a server-side validation failure looks like: PHP adds
+             field--error, the .field__error paragraph, and aria-invalid.
+
+        <div class="field field--error">
+          <label for="email">Email address <span class="req" aria-hidden="true">*</span></label>
+          <input type="email" id="email" name="email" required aria-invalid="true"
+                 aria-describedby="email-error" value="not-an-address">
+          <p class="field__error" id="email-error">
+            <svg class="icon" aria-hidden="true"><use href="#i-alert"></use></svg>
+            That does not look like an email address.
+          </p>
+        </div>
+        -->
+
+        <div class="field">
+          <label for="subject">Subject <span class="req" aria-hidden="true">*</span></label>
+          <input type="text" id="subject" name="subject" required value="">
+        </div>
+
+        <div class="field">
+          <label for="message">Message <span class="req" aria-hidden="true">*</span></label>
+          <textarea id="message" name="message" required
+                    maxlength="2000" data-counter="message-count"></textarea>
+          <span class="counter" id="message-count" aria-live="polite"></span>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" name="submitForm" class="btn btn--primary">
+            <svg class="icon" aria-hidden="true"><use href="#i-mail"></use></svg>
+            Send message
+          </button>
+          <span class="spacer"></span>
+          <a class="btn btn--quiet" href="index.html" data-back>Back</a>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="shell footer__inner">
+    <img class="footer__mark" src="assets/img/logo.png" width="128" height="128" alt="">
+    <ul class="footer__links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="#">Events</a></li>
+      <li><a href="#">Moots</a></li>
+      <li><a href="#">Links</a></li>
+      <li><a href="#">Sun &amp; Moon</a></li>
+      <li><a href="#">Wheel</a></li>
+      <li><a href="contact.html">Contact Us</a></li>
+    </ul>
+    <p>
+      Website design, hosting and IT support &mdash; Fenland Software Ltd.
+      <a href="https://www.fensoft.co.uk" rel="external noopener" target="_blank">www.fensoft.co.uk</a>
+    </p>
+  </div>
+</footer>
+
+<script src="assets/js/pagan.js"></script>
+</body>
+</html>

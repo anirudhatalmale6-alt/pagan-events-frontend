@@ -1,0 +1,215 @@
+PAGAN EVENTS — NOTES FOR THE PHP SIDE
+=====================================
+Anirudha Talmale — prototype, August 2026
+
+You mentioned you might only need one generic template. That is exactly how
+these files are built, so this note explains where the seams are.
+
+
+1. THE ONE GENERIC TEMPLATE
+---------------------------
+Every page is the same five pieces in the same order:
+
+    <head>          title + description differ, nothing else does
+    .masthead       identical, except the strap line under "Pagan Events"
+    .nav            identical, except which link carries aria-current="page"
+    <main>          THE ONLY PART THAT CHANGES
+    .footer         identical
+
+So a single template.php holding masthead + nav + footer, with three
+variables, covers the whole site:
+
+    $pageTitle    -> <title> and .masthead__strap
+    $currentNav   -> which <a> gets aria-current="page"
+    $content      -> everything inside <main class="page"><div class="shell">
+
+Nothing else in the shell varies from page to page. The icon sprite near the
+top of the <body> should live in the shared template too — it is inert markup,
+it just has to appear once per page before any icon is used.
+
+
+2. THE ICONS
+------------
+There is no icon font and no image request. The sprite is a hidden <svg>
+holding <symbol> elements, and an icon is then:
+
+    <svg class="icon" aria-hidden="true"><use href="#i-pin"></use></svg>
+
+Icons inherit the colour of the text around them, so you never have to make a
+second copy in a different colour. Available: i-pin, i-clock, i-cal, i-quill,
+i-leaf, i-menu, i-close, i-mail, i-alert. More can be added in ten seconds —
+send me the shape you want.
+
+
+3. THE EVENTS LOOP
+------------------
+One <li class="event"> per row. Only six values are needed:
+
+    <li class="event">
+      <p class="event__date">
+        <span class="event__dow"><?= $e['dow'] ?></span>   Sat
+        <span class="event__day"><?= $e['day'] ?></span>   22
+        <span class="event__mon"><?= $e['mon'] ?></span>   Aug
+      </p>
+      <div class="event__body">
+        <h3 class="event__title">
+          <a href="/events/show/<?= $e['id'] ?>"><?= $e['title'] ?></a>
+        </h3>
+        <ul class="event__meta">
+          <li><svg class="icon"><use href="#i-pin"></use></svg>
+              <span><?= $e['town'] ?>, <?= $e['county'] ?></span></li>
+          <li><svg class="icon"><use href="#i-clock"></use></svg>
+              <span><?= $e['times'] ?></span></li>
+        </ul>
+      </div>
+    </li>
+
+The whole card is clickable, but only the title is a real <a>. That keeps the
+keyboard tab order sane and makes the browser's status bar show the right URL
+on hover — which a JavaScript "click the whole div" handler does not.
+
+The <li> for the time can be left out entirely when an event has no times
+(several of your listings do not have them) — the card still lines up.
+
+IMPORTANT — the empty case. When the query returns nothing, print the
+.events-empty block instead of an empty <ul>. It is commented out in
+index.html ready to be uncommented. Ten quiet days in January should not leave
+a hole in the home page. home-empty-example.html shows what it looks like.
+
+
+4. THE MOON
+-----------
+Drawn in SVG, not an image, so it is correct for any phase and costs nothing
+to load. Your template writes exactly two things:
+
+  a) the class on the <svg>:
+        illumination < 50%  ->  moon--crescent
+        illumination >= 50% ->  moon--gibbous
+        waning at all       ->  add moon--waning   (it just mirrors the shape)
+
+  b) the rx of the terminator ellipse:
+        rx = 48 * abs(1 - 2 * (illumination / 100))
+
+     e.g. 35% ->  48 * abs(1 - 0.70) = 14.4      (today's value in the file)
+          50% ->  0        (a clean half moon)
+          90% ->  48 * 0.8 = 38.4  with moon--gibbous
+
+  Also update the <title> inside the <svg> — that is what a screen reader and
+  a search engine read.
+
+
+5. THE FORMS
+------------
+Markup pattern per field:
+
+    <div class="field">
+      <label for="thing">Label <span class="req" aria-hidden="true">*</span></label>
+      <input type="text" id="thing" name="thing" value="<?= h($v) ?>">
+      <span class="hint" id="thing-hint">optional helper text</span>
+    </div>
+
+When your validation rejects a field, add three things and nothing else:
+
+    - class  field--error  on the wrapping .field
+    - aria-invalid="true"  and  aria-describedby="thing-error"  on the input
+    - <p class="field__error" id="thing-error"> ... </p>  after the input
+
+A worked example is sitting commented out in contact.html.
+
+The message box uses maxlength="2000" (see note 6 below) and
+data-counter="message-count", which drives the live "N characters remaining"
+line. The browser enforces the limit; the counter only tells the visitor where
+they are. Your server should still check the length — never trust the browser.
+
+
+6. THINGS I CHANGED ON THE CONTACT PAGE, AND WHY
+------------------------------------------------
+These are all things I tested in a browser against your current page, not
+guesses:
+
+ a) maxlen="2000" is not an HTML attribute — the correct spelling is
+    maxlength. On the live page I typed straight past 2000 characters and the
+    browser let me (I stopped at 2004). The limit is currently doing nothing.
+    Fixed by using maxlength.
+
+ b) The Submit button ships disabled and is only enabled by enableSubmit()
+    firing on blur. I filled name, email and subject on the live page and the
+    button stayed disabled, because the last field had not been blurred yet.
+    A visitor who uses browser autofill, or who clicks Submit directly from
+    the subject field, meets a dead button with nothing telling them why.
+    Fixed by never disabling it: the form uses required + real validation, and
+    the server checks again anyway.
+
+ c) onPaste="return(false)" on the message box stops people pasting. That
+    hurts ordinary visitors far more than it hurts spammers — anyone composing
+    a longer message elsewhere, anyone on a phone, anyone using a password
+    manager or assistive software. Removed.
+
+ d) There are no <label for="..."> elements — the labels are <span>s. So
+    clicking a label does not focus its field, and a screen reader announces
+    an unlabelled box. Fixed with real labels.
+
+ e) The form is laid out with a <table>, and the inputs are width:40vw. On a
+    phone that makes every box 40% of the screen width. Fixed with a normal
+    block layout and width:100% inside a max-width card.
+
+ f) Email is type="text". Making it type="email" gives phones the keyboard
+    with the @ key on it and lets the browser check the shape for free.
+
+ g) Inputs are set to font-size:1rem. Anything under 16px makes iOS Safari
+    zoom in when the field is focused, which is why forms on phones often jump
+    about.
+
+
+7. THE ONE THING THAT MATTERS MOST
+----------------------------------
+Neither the current home page nor the current contact page has a viewport
+meta tag. I checked — there are zero of them. Without it a phone renders the
+page as though it were a 980px desktop and then shrinks the result, which is
+why everything is tiny and why the vw-based font sizes behave so oddly on
+small screens. Every page needs this line in <head>:
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+Nothing else in a responsive rebuild works properly until that is there.
+
+Related: a latent one to fix while you are in there. The script at the bottom
+of every page does
+
+    if (history.length <= 1) { document.getElementById('back_button').href = ... }
+
+but the home page has no element with id="back_button". When a visitor lands
+on the home page directly from a bookmark or a search result — which is the
+common case — that branch runs and throws, and any script after it on the
+page stops. Worth guarding with a null check, or only printing that script on
+pages that actually have a Back button.
+
+
+8. WHAT IS NOT IN THIS PROTOTYPE
+--------------------------------
+Being straight about the gaps, since this is two pages out of the set:
+
+  - Events list, single event, Moots, Sun & Moon, Wheel and the event
+    submission form are not built yet. The shell, the cards, the forms and the
+    tokens they need are all here, so they are mostly assembly.
+  - The Links section and its classification filter — the actual point of the
+    brief — is not built yet. That was my original offer and it is still the
+    piece I would do next.
+  - The nav links point at "#" rather than /events/list/0 etc., because this
+    is a static prototype with nothing behind it.
+  - Dark mode is included and follows the visitor's own system setting. If you
+    would rather not offer it, delete the one @media (prefers-color-scheme)
+    block near the top of pagan.css and the handful of overrides below it.
+
+
+9. BROWSER SUPPORT
+------------------
+Everything used here — CSS custom properties, grid, flexbox, clamp(), SVG
+sprites — is supported in every version of Chrome, Edge, Firefox and Safari
+released in roughly the last six years, desktop and mobile. There is no build
+step, no preprocessor and no framework. Two files: one CSS, one JS. Both are
+plain text you can edit directly.
+
+The JavaScript is progressive enhancement only. I tested every page with
+JavaScript switched off: all seven navigation links stay visible on a phone,
+and the contact form still submits. Nothing is hidden behind a script.

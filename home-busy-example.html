@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<!-- Without this line a phone pretends to be a 980px desktop and shrinks the
+     whole page. It is the single most important fix for the current site. -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pagan Events (busy list example) — Pagan and New Age events across the UK</title>
+<meta name="description" content="Pagan, New Age and alternative events, fayres, markets and moots across the United Kingdom. Free to list, free to browse.">
+<meta name="keywords" content="Folk, Festival, Pagan, Events, Moots, Fayres, Fairs, Craft, Markets, New Age, Wicca, Witchcraft, Druidism">
+<meta name="theme-color" content="#2b5a1c">
+<link rel="icon" href="assets/img/logo.png" sizes="128x128" type="image/png">
+<link rel="stylesheet" href="assets/css/pagan.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<!-- ==========================================================================
+     Icon sprite. One copy per page, hidden. Icons are then used with
+     <svg class="icon"><use href="#i-pin"></use></svg> — no icon font,
+     no extra HTTP request, and they inherit the surrounding text colour.
+     ========================================================================== -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <symbol id="i-pin" viewBox="0 0 24 24">
+    <path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11Z"/>
+    <circle cx="12" cy="10" r="2.6"/>
+  </symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="8.6"/><path d="M12 7.2V12l3.1 1.9"/>
+  </symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24">
+    <rect x="3.4" y="5.4" width="17.2" height="15.2" rx="2.4"/>
+    <path d="M3.4 10.1h17.2M8.4 3.4v3.6M15.6 3.4v3.6"/>
+  </symbol>
+  <symbol id="i-quill" viewBox="0 0 24 24">
+    <path d="M4 20c6.6-.6 10.4-3.2 12.7-6.6C19 10 19.8 6.4 20 3.6c-2.9.4-6.6 1.3-9.7 3.6C6.9 9.7 4.5 13.6 4 20Z"/>
+    <path d="M4 20c1.6-3.4 4-6 7.2-8"/>
+  </symbol>
+  <symbol id="i-leaf" viewBox="0 0 24 24">
+    <path d="M20 4c0 9-5.2 14-12 14-1.6 0-3-.3-4-.8C4 9.6 10.4 4 20 4Z"/>
+    <path d="M4 20c1.4-4.6 4.6-8.6 9-11"/>
+  </symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3.6 6.8h16.8M3.6 12h16.8M3.6 17.2h16.8"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24">
+    <rect x="2.8" y="5" width="18.4" height="14" rx="2.4"/><path d="m3.4 7.2 8.6 6 8.6-6"/>
+  </symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="8.6"/><path d="M12 7.6v5M12 16.2h.01"/>
+  </symbol>
+</svg>
+
+<!-- ==========================================================================
+     MASTHEAD  —  identical on every page
+     ========================================================================== -->
+<header class="masthead">
+  <div class="shell masthead__inner">
+    <img class="masthead__mark" src="assets/img/logo.png" width="128" height="128" alt="">
+    <div class="masthead__titles">
+      <h1 class="masthead__title"><a href="index.html">Pagan Events</a></h1>
+      <!-- PHP: the page's own sub-title goes here -->
+      <p class="masthead__strap">Pagan and New Age events across the UK</p>
+    </div>
+    <img class="masthead__mark masthead__mark--dup" src="assets/img/logo.png" width="128" height="128" alt="">
+  </div>
+</header>
+
+<!-- ==========================================================================
+     NAVIGATION  —  identical on every page except for aria-current
+     ========================================================================== -->
+<nav class="nav" data-nav aria-label="Main">
+  <div class="shell nav__bar">
+    <button class="nav__toggle" type="button" data-nav-toggle
+            aria-expanded="true" aria-controls="nav-panel" hidden>
+      <svg class="icon icon--open"  aria-hidden="true"><use href="#i-menu"></use></svg>
+      <svg class="icon icon--close" aria-hidden="true"><use href="#i-close"></use></svg>
+      Menu
+    </button>
+    <div class="nav__panel" id="nav-panel">
+      <div>
+        <ul class="nav__list">
+          <!-- PHP: add aria-current="page" to whichever one is current -->
+          <li><a href="index.html" aria-current="page">Home</a></li>
+          <li><a href="#">Events</a></li>
+          <li><a href="#">Moots</a></li>
+          <li><a href="#" title="Websites that may be of interest.">Links</a></li>
+          <li><a href="#" title="Sun and Moon data.">Sun &amp; Moon</a></li>
+          <li><a href="#" title="Wheel of the Year.">Wheel</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main class="page" id="main">
+  <div class="shell">
+
+    <!-- ======================================================================
+         WELCOME + MOON PHASE
+         ====================================================================== -->
+    <section class="section" aria-labelledby="welcome-h">
+      <div class="welcome">
+
+        <!-- The moon is drawn, not photographed: no image to load and it is
+             correct for every phase. The template writes two things —
+             the class (crescent/gibbous, plus waning to mirror it) and the
+             rx of the terminator ellipse. See TEMPLATE-NOTES.txt. -->
+        <div class="moondial">
+          <svg class="moon moon--crescent" viewBox="-50 -50 100 100" role="img"
+               aria-labelledby="moon-alt">
+            <title id="moon-alt">Waxing crescent moon, 35% illuminated</title>
+            <circle class="moon__disc" r="48"/>
+            <path   class="moon__lit"  d="M0,-48 A48,48 0 0 1 0,48 Z"/>
+            <ellipse class="moon__term" rx="14.4" ry="48"/>
+            <circle class="moon__ring" r="48"/>
+          </svg>
+          <p class="moondial__caption">
+            <strong>Waxing Crescent</strong>
+            35% illuminated
+          </p>
+        </div>
+
+        <div>
+          <h2 class="welcome__greeting" id="welcome-h">Hail and Welcome</h2>
+          <p class="welcome__lede">
+            We hope you will find this resource for Pagan, New Age and broadly
+            similar events helpful. We are now able to show the nearest railway
+            station to some venues, to assist those travelling by train. We
+            welcome any suggestions for improving the site.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         EVENTS IN THE NEXT TEN DAYS
+         ====================================================================== -->
+    <section class="section" aria-labelledby="upcoming-h">
+      <div class="section__head">
+        <h2 id="upcoming-h">Events in the Next Ten Days</h2>
+        <p class="section__note">DEMONSTRATION LIST &mdash; a busier ten days than we actually have this week, so you can see how the grid fills out. Listed in date order. Details are given in good faith — please check with the organisers before setting off.</p>
+      </div>
+
+      <!-- PHP: foreach ($events as $e) { ... }  One <li> per row. -->
+      <ul class="events">
+
+        <li class="event">
+          <p class="event__date">
+            <span class="event__dow">Sat</span>
+            <span class="event__day">22</span>
+            <span class="event__mon">Aug</span>
+          </p>
+          <div class="event__body">
+            <h3 class="event__title"><a href="#">Witch&rsquo;s Fair</a></h3>
+            <ul class="event__meta">
+              <li>
+                <svg class="icon" aria-hidden="true"><use href="#i-pin"></use></svg>
+                <span>Wisbech, Cambridgeshire</span>
+              </li>
+              <li>
+                <svg class="icon" aria-hidden="true"><use href="#i-clock"></use></svg>
+                <span>10:00 &ndash; 14:00</span>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="event">
+          <p class="event__date">
+            <span class="event__dow">Sat</span>
+            <span class="event__day">29</span>
+            <span class="event__mon">Aug</span>
+          </p>
+          <div class="event__body">
+            <h3 class="event__title"><a href="#">The Huntingdon Alternative Fayre</a></h3>
+            <ul class="event__meta">
+              <li>
+                <svg class="icon" aria-hidden="true"><use href="#i-pin"></use></svg>
+                <span>Huntingdon, Cambridgeshire</span>
+              </li>
+              <li>
+                <svg class="icon" aria-hidden="true"><use href="#i-clock"></use></svg>
+                <span>10:00 &ndash; 16:00</span>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="event">
+          <p class="event__date">
+            <span class="event__dow">Sat</span>
+            <span class="event__day">29</span>
+            <span class="event__mon">Aug</span>
+          </p>
+          <div class="event__body">
+            <h3 class="event__title"><a href="#">The Festival of Wellness</a></h3>
+            <ul class="event__meta">
+              <li>
+                <svg class="icon" aria-hidden="true"><use href="#i-pin"></use></svg>
+                <span>Norwich, Norfolk</span>
+              </li>
+              <li>
+                <svg class="icon" aria-hidden="true"><use href="#i-clock"></use></svg>
+                <span>Sat 10:00 &ndash; Sun 16:00</span>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="event">
+          <p class="event__date">
+            <span class="event__dow">Mon</span>
+            <span class="event__day">31</span>
+            <span class="event__mon">Aug</span>
+          </p>
+          <div class="event__body">
+            <h3 class="event__title"><a href="#">The Big Spiritual &amp; Witchcraft Fair</a></h3>
+            <ul class="event__meta">
+              <li>
+                <svg class="icon" aria-hidden="true"><use href="#i-pin"></use></svg>
+                <span>Bridgwater, Somerset</span>
+              </li>
+              <li>
+                <svg class="icon" aria-hidden="true"><use href="#i-clock"></use></svg>
+                <span>11:00 &ndash; 16:00</span>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="event">
+          <p class="event__date">
+            <span class="event__dow">Sat</span>
+            <span class="event__day">12</span>
+            <span class="event__mon">Sep</span>
+          </p>
+          <div class="event__body">
+            <h3 class="event__title"><a href="#">The Big Spiritual &amp; Witchcraft Fair</a></h3>
+            <ul class="event__meta">
+              <li>
+                <svg class="icon" aria-hidden="true"><use href="#i-pin"></use></svg>
+                <span>Plymouth, Devon</span>
+              </li>
+              <li>
+                <svg class="icon" aria-hidden="true"><use href="#i-clock"></use></svg>
+                <span>11:00 &ndash; 16:00</span>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="event">
+          <p class="event__date">
+            <span class="event__dow">Sun</span>
+            <span class="event__day">13</span>
+            <span class="event__mon">Sep</span>
+          </p>
+          <div class="event__body">
+            <h3 class="event__title"><a href="#">Darkside Market</a></h3>
+            <ul class="event__meta">
+              <li>
+                <svg class="icon" aria-hidden="true"><use href="#i-pin"></use></svg>
+                <span>Stourbridge, Worcestershire</span>
+              </li>
+              <li>
+                <svg class="icon" aria-hidden="true"><use href="#i-clock"></use></svg>
+                <span>10:00 &ndash; 15:00</span>
+              </li>
+            </ul>
+          </div>
+        </li>
+
+      </ul>
+          </div>
+        </li>
+
+      </ul>
+
+      <!-- If the loop produced nothing at all, print this instead. Ten quiet
+           days in January should not leave a hole in the page:
+
+           <div class="events-empty">
+             <svg class="icon" aria-hidden="true"><use href="#i-cal"></use></svg>
+             <p>Nothing listed in the next ten days just yet.</p>
+             <p><a href="/events/list/0">See everything that is coming up</a>,
+                or <a href="/events/input">add your own event</a>.</p>
+           </div>
+      -->
+
+      <p class="events-more">
+        <a class="btn btn--quiet" href="#">
+          <svg class="icon" aria-hidden="true"><use href="#i-cal"></use></svg>
+          See all forthcoming events
+        </a>
+      </p>
+    </section>
+
+    <!-- ======================================================================
+         PANELS
+         ====================================================================== -->
+    <section class="section" aria-label="About this site">
+      <div class="panels">
+
+        <div class="panel">
+          <h3>
+            <svg class="icon" aria-hidden="true"><use href="#i-leaf"></use></svg>
+            About Pagan Events
+          </h3>
+          <p>
+            We list Pagan, New Age and broadly similar events, fayres, markets
+            and moots taking place across the United Kingdom. Browsing is free
+            and always will be, and there is nothing to sign up for.
+          </p>
+          <p>
+            Sun and moon rise and set times are worked out from the postcode you
+            give, and the Wheel of the Year shows the eight festivals with their
+            dates.
+          </p>
+        </div>
+
+        <div class="panel panel--accent">
+          <h3>
+            <svg class="icon" aria-hidden="true"><use href="#i-quill"></use></svg>
+            Event Organisers
+          </h3>
+          <p>
+            We often receive emails asking why some events are not listed. The
+            simple answer is that we can only list events we know about. This
+            site gets several hundred visitors every day from Pagans looking for
+            events such as yours.
+          </p>
+          <p>
+            To maximise publicity for your event, please either let us know
+            about it or add it yourself — free of charge.
+          </p>
+          <p>
+            <a class="btn btn--primary" href="#">
+              <svg class="icon" aria-hidden="true"><use href="#i-quill"></use></svg>
+              Add your event
+            </a>
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<!-- ==========================================================================
+     FOOTER  —  identical on every page
+     ========================================================================== -->
+<footer class="footer">
+  <div class="shell footer__inner">
+    <img class="footer__mark" src="assets/img/logo.png" width="128" height="128" alt="">
+    <ul class="footer__links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="#">Events</a></li>
+      <li><a href="#">Moots</a></li>
+      <li><a href="#">Links</a></li>
+      <li><a href="#">Sun &amp; Moon</a></li>
+      <li><a href="#">Wheel</a></li>
+      <li><a href="contact.html">Contact Us</a></li>
+    </ul>
+    <p>
+      Website design, hosting and IT support &mdash; Fenland Software Ltd.
+      <a href="https://www.fensoft.co.uk" rel="external noopener" target="_blank">www.fensoft.co.uk</a>
+    </p>
+  </div>
+</footer>
+
+<script src="assets/js/pagan.js"></script>
+</body>
+</html>
